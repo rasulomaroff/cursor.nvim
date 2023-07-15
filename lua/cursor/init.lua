@@ -26,7 +26,7 @@ local Util = require 'cursor.util'
 --- @class Cursor.StaticCursor
 --- @field mode string | string[] -- You can check possible modes by :h 'guicursor'
 --- @field size string | number - string or number from 1 to 100. Only works in GUI.
---- @field shape 'horizontal' | 'vertical' | 'block'
+--- @field shape 'hor' | 'ver' | 'block' -- stand for horizontal, vertical, and block
 --- @field hl? string | [string, string]
 
 --- @class Cursor
