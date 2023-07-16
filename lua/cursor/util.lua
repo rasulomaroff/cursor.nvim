@@ -1,15 +1,14 @@
 local M = {}
 
-M.cursor = {}
 M.group = vim.api.nvim_create_augroup('CommuNVIM-cursor', { clear = true })
 
 --- @param cursor string
-function M.cursor.set(cursor)
+function M.set_cursor(cursor)
     vim.opt.guicursor:append(cursor)
 end
 
 --- @param cursor string
-function M.cursor.del(cursor)
+function M.del_cursor(cursor)
     -- neovim cannot delete several cursors separated with a comma for some reason
     local cursors = vim.split(cursor, ',')
 
@@ -155,6 +154,12 @@ end
 --- @return string cursors: string of cursors that can be passed in vim.opt.guicursor
 function M.get_static_cursors(cursors)
     return get_cursors(cursors, 'static')
+end
+
+---@param strategy any
+---@return boolean
+function M.is_strategy(strategy)
+    return strategy == 'event' or strategy == 'timer' or strategy == 'custom'
 end
 
 return M

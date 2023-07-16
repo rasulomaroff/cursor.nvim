@@ -11,20 +11,20 @@ local M = {
     _delay = nil,
 }
 
-local function clear_cursor()
+local function clear()
     M._timer = nil
-    Util.cursor.del(M._cursor)
+    Util.del_cursor(M._cursor)
 end
 
 -- setting this to exported module so that it can be used outside
-function M.trigger_cursor_blink()
+function M.trigger()
     if M._timer then
         M._timer:close()
     else
-        Util.cursor.set(M._cursor)
+        Util.set_cursor(M._cursor)
     end
 
-    M._timer = vim.defer_fn(clear_cursor, M._delay)
+    M._timer = vim.defer_fn(clear, M._delay)
 end
 
 --- @param cursor string
@@ -54,15 +54,25 @@ function M:init(cursor, config)
         events = { 'CursorMoved', 'CursorMovedI' }
     end
 
-    if vim.tbl_count(events) == 0 then
-        error 'Cursor.nvim: Expected events array not to be empty'
+    vim.validate {
+        events = {
+            events,
+            function(v)
+                return vim.tbl_count(v) > 0
+            end,
+            'events not to be empty',
+        },
+    }
 
-        return
-    end
+    -- if vim.tbl_count(events) == 0 then
+    --     error 'Cursor.nvim: Expected events array not to be empty'
+    --
+    --     return
+    -- end
 
     Util.autocmd(events, {
         group = Util.group,
-        callback = M.trigger_cursor_blink,
+        callback = M.trigger,
     })
 end
 

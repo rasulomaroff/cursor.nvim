@@ -1,6 +1,6 @@
 local Util = require 'cursor.util'
 
---- @alias Cursor.Strategy.Type 'event' | 'timer' | 'custom' | 'none'
+--- @alias Cursor.Strategy.Type 'event' | 'timer' | 'custom'
 
 --- @class Cursor.Strategy
 --- @field type? Cursor.Strategy.Type
@@ -43,7 +43,7 @@ function M.setup(config)
 
     local strategy_type = config.trigger.strategy.type
 
-    if strategy_type == 'none' or strategy_type == '' then
+    if Util.is_strategy(strategy_type) then
         return
     end
 

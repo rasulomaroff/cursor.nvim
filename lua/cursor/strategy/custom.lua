@@ -20,7 +20,7 @@ function M:init(cursor)
             return
         end
 
-        Util.cursor.set(cursor)
+        Util.set_cursor(cursor)
     end
 
     function M.clear()
@@ -28,7 +28,7 @@ function M:init(cursor)
             return
         end
 
-        Util.cursor.del(cursor)
+        Util.del_cursor(cursor)
     end
 end
 
