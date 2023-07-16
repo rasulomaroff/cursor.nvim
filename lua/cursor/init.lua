@@ -1,31 +1,14 @@
 local Util = require 'cursor.util'
-
---- @alias Cursor.Strategy.Type 'event' | 'timer' | 'custom'
-
---- @class Cursor.Strategy
---- @field type? Cursor.Strategy.Type
---- @field timer? Cursor.Strategy.Timer
-
---- @class Cursor.BlinkCursor
---- @field mode string | string[] -- You can check possible modes by :h 'guicursor'
---- @field size? string | number - string or number from 1 to 100. Only works in GUI.
---- @field shape? 'hor' | 'ver' | 'block' -- stand for horizontal, vertical, and block
---- @field hl? string | [string, string]
---- @field blinkwait number | string
---- @field blinkon number | string
---- @field blinkoff number | string
-
---- @class Cursor.StaticCursor
---- @field mode string | string[] -- You can check possible modes by :h 'guicursor'
---- @field size string | number - string or number from 1 to 100. Only works in GUI.
---- @field shape 'hor' | 'ver' | 'block' -- stand for horizontal, vertical, and block
---- @field hl? string | [string, string]
+local Cursor = require 'cursor.cursor'
 
 local M = {}
 
 --- @param config? Cursor.Config
 function M.setup(config)
     -- TODO: reload it if setup is called more than once
+
+    -- TODO: validating?
+    -- vim.validate {}
     local default_config = require 'cursor.config'
 
     config = config and vim.tbl_deep_extend('force', default_config, config) or default_config
@@ -35,11 +18,9 @@ function M.setup(config)
     end
 
     if config.cursors and not vim.tbl_isempty(config.cursors) then
-        Util.set_cursor(Util.get_static_cursors(config.cursors))
+        Cursor.set(Cursor.extract_list(config.cursors))
+        -- Util.set_cursor(Util.get_static_cursors(config.cursors))
     end
-
-    -- TODO: validating?
-    -- vim.validate {}
 
     local strategy_type = config.trigger.strategy.type
 

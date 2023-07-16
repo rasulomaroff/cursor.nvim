@@ -1,9 +1,5 @@
 local Util = require 'cursor.util'
-
---- @class Cursor.Strategy.Timer
---- @field delay number -- delay in ms
---- @field events? string | string[] -- additional events to trigger a cursor blinking
---- @field overwrite_events? boolean -- overwrite default events
+local Cursor = require 'cursor.cursor'
 
 local M = {
     _timer = nil,
@@ -13,7 +9,7 @@ local M = {
 
 local function clear()
     M._timer = nil
-    Util.del_cursor(M._cursor)
+    Cursor.del(M._cursor)
 end
 
 -- setting this to exported module so that it can be used outside
@@ -21,7 +17,7 @@ function M.trigger()
     if M._timer then
         M._timer:close()
     else
-        Util.set_cursor(M._cursor)
+        Cursor.set(M._cursor)
     end
 
     M._timer = vim.defer_fn(clear, M._delay)

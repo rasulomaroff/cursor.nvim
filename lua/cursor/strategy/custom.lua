@@ -1,4 +1,4 @@
-local Util = require 'cursor.util'
+local Cursor = require 'cursor.cursor'
 
 local M = {
     _initialized = false,
@@ -20,7 +20,7 @@ function M:init(cursor)
             return
         end
 
-        Util.set_cursor(cursor)
+        Cursor.set(cursor)
     end
 
     function M.clear()
@@ -28,7 +28,7 @@ function M:init(cursor)
             return
         end
 
-        Util.del_cursor(cursor)
+        Cursor.del(cursor)
     end
 end
 

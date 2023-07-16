@@ -1,4 +1,5 @@
 local Util = require 'cursor.util'
+local Cursor = require 'cursor.cursor'
 
 local M = {
     _move_events = { 'CursorMoved', 'CursorMovedI' },
@@ -14,7 +15,7 @@ M._move_opts = {
     callback = function()
         vim.api.nvim_del_autocmd(M._autocmd_id)
 
-        Util.set_cursor(M._cursor)
+        Cursor.set(M._cursor)
 
         M:_watch_hold()
     end,
@@ -25,7 +26,7 @@ M._hold_opts = {
     callback = function()
         vim.api.nvim_del_autocmd(M._autocmd_id)
 
-        Util.del_cursor(M._cursor)
+        Cursor.del(M._cursor)
 
         M:_watch_movements()
     end,
