@@ -1,7 +1,7 @@
 local Cursor = require 'cursor.cursor'
 
 local M = {
-    _initialized = false,
+    -- _initialized = false,
     _triggered = false,
     _cursor = nil,
 }
@@ -12,7 +12,7 @@ function M.clear() end
 
 --- @param cursor string
 function M:init(cursor)
-    self._initialized = true
+    -- self._initialized = true
     self._cursor = cursor
 
     function M.trigger()
