@@ -15,7 +15,7 @@ M._move_opts = {
     callback = function()
         vim.api.nvim_del_autocmd(M._autocmd_id)
 
-        Cursor.set(M._cursor)
+        Cursor.set(M._cursor, true)
 
         M:_watch_hold()
     end,
@@ -26,7 +26,7 @@ M._hold_opts = {
     callback = function()
         vim.api.nvim_del_autocmd(M._autocmd_id)
 
-        Cursor.del(M._cursor)
+        Cursor.del(M._cursor, true)
 
         M:_watch_movements()
     end,

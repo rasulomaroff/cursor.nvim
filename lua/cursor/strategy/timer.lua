@@ -9,7 +9,8 @@ local M = {
 
 local function clear()
     M._timer = nil
-    Cursor.del(M._cursor)
+
+    Cursor.del(M._cursor, true)
 end
 
 -- setting this to exported module so that it can be used outside
@@ -17,7 +18,7 @@ function M.trigger()
     if M._timer then
         M._timer:close()
     else
-        Cursor.set(M._cursor)
+        Cursor.set(M._cursor, true)
     end
 
     M._timer = vim.defer_fn(clear, M._delay)

@@ -20,7 +20,7 @@ function M:init(cursor)
             return
         end
 
-        Cursor.set(cursor)
+        Cursor.set(cursor, true)
     end
 
     function M.clear()
@@ -28,7 +28,7 @@ function M:init(cursor)
             return
         end
 
-        Cursor.del(cursor)
+        Cursor.del(cursor, true)
     end
 end
 
