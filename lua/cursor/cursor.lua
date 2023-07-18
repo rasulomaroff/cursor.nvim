@@ -71,22 +71,22 @@ function M.extract(cursor)
         cursor_string = cursor.mode .. ':'
     end
 
-    local has_static = false
+    local has_form = false
 
     if cursor.hl or cursor.size or cursor.shape then
-        has_static = true
-        cursor_string = cursor_string .. M.extract_static(cursor)
+        has_form = true
+        cursor_string = cursor_string .. M.extract_form(cursor)
     end
 
     if cursor.blink ~= nil then
-        if has_static then
+        if has_form then
             cursor_string = cursor_string .. '-'
         end
 
         cursor_string = cursor_string .. M.extract_blink(cursor.blink)
     end
 
-    if has_static and cursor.replace then
+    if has_form and cursor.replace then
         table.insert(M._replaceable, cursor_string)
     end
 
@@ -120,7 +120,7 @@ end
 --- @package
 --- @private
 --- @param cursor Cursor.Cursor
-function M.extract_static(cursor)
+function M.extract_form(cursor)
     vim.validate {
         size = {
             cursor.size,
@@ -167,7 +167,7 @@ function M.extract_static(cursor)
 
     -- to be honest, there's no sense in doing that, since neovim handles block shape
     -- even if you specify its size (it just won't be applied), but a more correct way
-    -- is just not to specify a size when you set the "block" cursor anyway
+    -- is just not specifying a size when you set the "block" cursor anyway
     if cursor.shape then
         if cursor.shape == 'block' then
             cursor_str = cursor.shape
