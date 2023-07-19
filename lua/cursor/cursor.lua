@@ -87,6 +87,9 @@ function M.extract(cursor, triggerable)
         end
 
         cursor_string = cursor_string .. M.extract_blink(cursor.blink)
+    elseif not has_form then
+        error 'You did not specify nor blink nor a cursor form'
+        return ''
     end
 
     if has_form and cursor.replace then
