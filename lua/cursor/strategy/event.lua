@@ -5,7 +5,6 @@ local M = {
     _move_events = { 'CursorMoved', 'CursorMovedI' },
     _hold_events = { 'CursorHold', 'CursorHoldI' },
     _autocmd_id = nil,
-    _cursor = nil,
 }
 
 -- saving it right in the module so that we don't recreate these tables every
@@ -15,7 +14,7 @@ M._move_opts = {
     callback = function()
         vim.api.nvim_del_autocmd(M._autocmd_id)
 
-        Cursor.set(M._cursor, true)
+        Cursor:trigger()
 
         M:_watch_hold()
     end,
@@ -26,7 +25,7 @@ M._hold_opts = {
     callback = function()
         vim.api.nvim_del_autocmd(M._autocmd_id)
 
-        Cursor.del(M._cursor, true)
+        Cursor:revoke()
 
         M:_watch_movements()
     end,
@@ -44,11 +43,6 @@ function M:_watch_hold()
     self._autocmd_id = Util.autocmd(self._hold_events, self._hold_opts)
 end
 
---- @param cursor string
-function M:init(cursor)
-    self._cursor = cursor
-
-    M:_watch_movements()
-end
+M.init = M._watch_movements
 
 return M

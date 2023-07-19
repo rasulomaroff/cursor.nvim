@@ -8,7 +8,7 @@ end
 
 ---@param strategy any
 ---@return boolean
-function M.is_strategy(strategy)
+function M.has_strategy(strategy)
     return strategy == 'event' or strategy == 'timer' or strategy == 'custom'
 end
 

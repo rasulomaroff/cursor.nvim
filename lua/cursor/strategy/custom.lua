@@ -1,26 +1,21 @@
 local Cursor = require 'cursor.cursor'
 
 local M = {
-    -- _initialized = false,
     _triggered = false,
-    _cursor = nil,
 }
 
 -- noop while not initialized
 function M.trigger() end
 function M.clear() end
 
---- @param cursor string
-function M:init(cursor)
-    -- self._initialized = true
-    self._cursor = cursor
-
+function M:init()
     function M.trigger()
         if M._triggered then
             return
         end
 
-        Cursor.set(cursor, true)
+        self._triggered = true
+        Cursor:trigger()
     end
 
     function M.clear()
@@ -28,7 +23,8 @@ function M:init(cursor)
             return
         end
 
-        Cursor.del(cursor, true)
+        self._triggered = false
+        Cursor:revoke()
     end
 end
 

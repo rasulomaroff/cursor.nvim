@@ -14,50 +14,53 @@
 
 local M = {
     _replaceable = {},
+    _triggerable = {},
 }
 
---- @param cursor string
---- @param del_replaceable? boolean
-function M.set(cursor, del_replaceable)
-    ---@diagnostic disable-next-line: param-type-mismatch
-    vim.opt.guicursor:append(cursor)
+function M:trigger()
+    for _, cursor in ipairs(self._triggerable) do
+        self.set(cursor)
+    end
 
-    if del_replaceable then
-        for _, c in ipairs(M._replaceable) do
-            ---@diagnostic disable-next-line: param-type-mismatch
-            vim.opt.guicursor:remove(c)
-        end
+    for _, cursor in ipairs(self._replaceable) do
+        ---@diagnostic disable-next-line: param-type-mismatch
+        vim.opt.guicursor:remove(cursor)
+    end
+end
+
+function M:revoke()
+    for _, cursor in ipairs(self._triggerable) do
+        self.del(cursor)
+    end
+
+    for _, cursor in ipairs(self._replaceable) do
+        ---@diagnostic disable-next-line: param-type-mismatch
+        vim.opt.guicursor:append(cursor)
     end
 end
 
 --- @param cursor string
---- @param set_replaceable? boolean
-function M.del(cursor, set_replaceable)
+function M.set(cursor)
+    ---@diagnostic disable-next-line: param-type-mismatch
+    vim.opt.guicursor:append(cursor)
+end
+
+--- @param cursor string
+function M.del(cursor)
     -- neovim cannot delete several cursors separated with a comma for some reason
     -- but can append them
     local cursors = vim.split(cursor, ',')
 
-    if #cursors > 1 then
-        for _, c in ipairs(cursors) do
-            ---@diagnostic disable-next-line: param-type-mismatch
-            vim.opt.guicursor:remove(c)
-        end
-    else
+    for _, c in ipairs(cursors) do
         ---@diagnostic disable-next-line: param-type-mismatch
-        vim.opt.guicursor:remove(cursor)
-    end
-
-    if set_replaceable then
-        for _, c in ipairs(M._replaceable) do
-            ---@diagnostic disable-next-line: param-type-mismatch
-            vim.opt.guicursor:append(c)
-        end
+        vim.opt.guicursor:remove(c)
     end
 end
 
 --- @param cursor Cursor.Cursor
+--- @param triggerable? boolean
 --- @return string
-function M.extract(cursor)
+function M.extract(cursor, triggerable)
     vim.validate {
         mode = { cursor.mode, { 's', 't' } },
     }
@@ -90,15 +93,20 @@ function M.extract(cursor)
         table.insert(M._replaceable, cursor_string)
     end
 
+    if triggerable then
+        table.insert(M._triggerable, cursor_string)
+    end
+
     return cursor_string
 end
 
 --- @param cursors Cursor.Cursor[]
+--- @param triggerable? boolean
 --- @return string
-function M.extract_list(cursors)
+function M.extract_list(cursors, triggerable)
     ---@type string
     ---@diagnostic disable-next-line: assign-type-mismatch
-    local cursor_str = type(cursors[1]) == 'table' and M.extract(cursors[1]) or cursors[1]
+    local cursor_str = type(cursors[1]) == 'table' and M.extract(cursors[1], triggerable) or cursors[1]
 
     local len = vim.tbl_count(cursors)
 
@@ -107,7 +115,7 @@ function M.extract_list(cursors)
     else
         for i = 2, len, 1 do
             if type(cursors[i]) == 'table' then
-                cursor_str = cursor_str .. ',' .. M.extract(cursors[i])
+                cursor_str = cursor_str .. ',' .. M.extract(cursors[i], triggerable)
             else
                 cursor_str = cursor_str .. ',' .. cursors[i]
             end
