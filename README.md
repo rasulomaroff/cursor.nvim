@@ -39,15 +39,19 @@
 }
 ```
 
-#### `config.overwrite_cursor`: `boolean`
+### Config options
+
+**`config.overwrite_cursor`**: `boolean`
 Default: `false`.
+
 If `true`, then it will clear `vim.opt.guicursor` when the `setup` method is called. This allows you to configure
 cursors from scratch.
 
-#### `config.cursors`: `table<string | Cursor.Cursor>`
+**`config.cursors`**: `table<string | Cursor.Cursor>`
+
 It is an array of cursor strings (`:h 'guicursor'`) or lua tables with the following type:
 
-**`Cursor.Cursor`**
+`Cursor.Cursor`
 
 - **`* mode`** - mode in which a cursor will be applied, check `:h 'guicursor'`.
 - **`shape`** - `'block'` | `'ver'` | `'hor'` - shape of a cursor: block, vertical or horizontal.
@@ -58,12 +62,20 @@ value is used to highlight language mappings. Read more `:h language-mapping`.
 - **`blink`** - `number` | `false` | `Cursor.Cursor.Blink` - If specified as `number`, then that number will be used for `blinkwait`, `blinkon`, `blinkoff`.
 If specified as `false`, then it will forcely disable blinking (the use-case of this will be presented below). Or can be specified as a table with the following type:
 
-  **`Cursor.Cursor.Blink`**
-    - **`wait`** - `number` - blinkwait
-    - **`on`** - `number` - blinkon
-    - **`off`** - `number` - blinkoff
-    - **`freq`** - `number` - this value will be used if any of the above fields aren't specified
+  `Cursor.Cursor.Blink`
+    - **`wait`** - `number` ms - blinkwait
+    - **`on`** - `number` ms - blinkon
+    - **`off`** - `number` ms - blinkoff
+    - **`freq`** - `number` ms - this value will be used if any of the above fields aren't specified
+
+  You can read about all of the above options in `:h 'guicursor'`
+  
+  > Warn: all of those blink options are supposed to work in GUI. You can still set numbers there to enable blinking in general,
+  > but in most cases it won't matter which number you specify. Don't forget if you set `0` for any of those fields, it will
+  > disable blinking completely (`:h 'guicursor'`)
 
 ## Custom trigger
 
 ## Examples
+
+## Terminals & GUI
