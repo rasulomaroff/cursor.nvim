@@ -1,4 +1,4 @@
-*cursor.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 July 20
+*cursor.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 July 21
 
 ==============================================================================
 Table of Contents                              *cursor.nvim-table-of-contents*
@@ -103,6 +103,18 @@ EXAMPLES                                    *cursor.nvim-cursor.nvim-examples*
 
 
 TERMINALS & GUI                      *cursor.nvim-cursor.nvim-terminals-&-gui*
+
+
+TERMINALS ~
+
+- WezTerm - blinking times don’t affect cursor blinking times, which is expected, but blinking overall works. You can configure blinking delay in the WezTerm config file. Tested on MacOS.
+- Alacritty - blinking stops after several blinks even without using this plugin, not sure why. Tested on MacOS.
+- iTerm - the same as WezTerm.
+
+
+GUIS ~
+
+- Neovide - eveyrything works perfectly. Tested on MacOS.
 
 ==============================================================================
 2. Links                                                   *cursor.nvim-links*
