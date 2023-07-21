@@ -79,3 +79,13 @@ If specified as `false`, then it will forcely disable blinking (the use-case of 
 ## Examples
 
 ## Terminals & GUI
+
+### Terminals
+
+- WezTerm - blinking times don't affect cursor blinking times, which is expected, but blinking overall works. You can configure blinking delay in the WezTerm config file. Tested on MacOS.
+- Alacritty - blinking stops after several blinks even without using this plugin, not sure why. Tested on MacOS.
+- iTerm - the same as WezTerm.
+
+### GUIs
+
+- Neovide - eveyrything works perfectly. Tested on MacOS.
