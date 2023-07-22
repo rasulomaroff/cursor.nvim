@@ -1,4 +1,4 @@
-*cursor.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 July 21
+*cursor.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 July 22
 
 ==============================================================================
 Table of Contents                              *cursor.nvim-table-of-contents*
