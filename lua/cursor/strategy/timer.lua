@@ -37,14 +37,9 @@ function M:init(config)
     if config.events then
         events = config.overwrite_events and {} or { 'CursorMoved', 'CursorMovedI' }
 
-        if type(config.events) == 'table' then
-            events = vim.tbl_extend('force', events, config.events --[[ @as table<string> ]])
-        else
-            -- use "extend" here and above, so that if default events passed,
-            -- they won't be applied twice
-            events = vim.tbl_extend('force', events, { config.events })
-        end
-    else
+        ---@diagnostic disable-next-line: param-type-mismatch
+        vim.list_extend(events, type(config.events) == 'table' and config.events or { config.events })
+    elseif not config.overwrite_events then
         events = { 'CursorMoved', 'CursorMovedI' }
     end
 
@@ -52,9 +47,12 @@ function M:init(config)
         events = {
             events,
             function(v)
-                return vim.tbl_count(v) > 0
+                if type(v) ~= 'table' then
+                    return false, 'expected events to be table'
+                end
+
+                return vim.tbl_count(v) > 0, 'expected events table not to be empty'
             end,
-            'events not to be empty',
         },
     }
 
