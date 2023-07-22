@@ -6,7 +6,7 @@ local M = {
 
 -- noop while not initialized
 function M.trigger() end
-function M.clear() end
+function M.revoke() end
 
 function M:init()
     function M.trigger()
@@ -18,7 +18,7 @@ function M:init()
         Cursor:trigger()
     end
 
-    function M.clear()
+    function M.revoke()
         if not M._triggered then
             return
         end
