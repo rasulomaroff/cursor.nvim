@@ -45,7 +45,7 @@ function M.setup(config)
     end
 
     if config.cursors and not vim.tbl_isempty(config.cursors) then
-        Cursor.set(Cursor.extract_list(config.cursors))
+        Cursor:set_constant_cursors(config.cursors)
     end
 
     local strategy_type
@@ -61,7 +61,7 @@ function M.setup(config)
         ['trigger.cursors'] = { config.trigger.cursors, 't' },
     }
 
-    Cursor.extract_list(config.trigger.cursors, true)
+    Cursor:set_trigger_cursors(config.trigger.cursors)
 
     require('cursor.strategy.' .. strategy_type):init(config.trigger.strategy[strategy_type])
 end

@@ -2,7 +2,7 @@
 --- @field mode string | string[] - You can check possible modes by :h 'guicursor'
 --- @field blink? Cursor.Cursor.Blink | number | false
 --- @field shape 'hor' | 'ver' | 'block' - stand for horizontal, vertical, and block
---- @field size? number - string or number from 1 to 100. Only works in GUI.
+--- @field size? number - number from 1 to 100. Only works in GUI.
 --- @field hl? string | [string, string]
 --- @field replace? boolean - remove this cursor while a trigger is active. default: false
 
@@ -10,7 +10,7 @@
 --- @field wait? number
 --- @field on? number
 --- @field off? number
---- @field freq? number - unspecified properties will be equal to this
+--- @field freq? number - unspecified blink properties will be set to this value
 
 local M = {
     _replaceable = {},
@@ -23,8 +23,7 @@ function M:trigger()
     end
 
     for _, cursor in ipairs(self._replaceable) do
-        ---@diagnostic disable-next-line: param-type-mismatch
-        vim.opt.guicursor:remove(cursor)
+        self.del(cursor)
     end
 end
 
@@ -34,8 +33,7 @@ function M:revoke()
     end
 
     for _, cursor in ipairs(self._replaceable) do
-        ---@diagnostic disable-next-line: param-type-mismatch
-        vim.opt.guicursor:append(cursor)
+        self.set(cursor)
     end
 end
 
@@ -58,27 +56,21 @@ function M.del(cursor)
 end
 
 --- @param cursor Cursor.Cursor
---- @param triggerable? boolean
 --- @return string
-function M.extract(cursor, triggerable)
+function M:stringify(cursor)
     vim.validate {
         mode = { cursor.mode, { 's', 't' } },
     }
 
     --- @type string
-    local cursor_string
-
-    if type(cursor.mode) == 'table' then
-        cursor_string = table.concat(cursor.mode --[[ @as table<string> ]], '-') .. ':'
-    else
-        cursor_string = cursor.mode .. ':'
-    end
+    ---@diagnostic disable-next-line: param-type-mismatch
+    local cursor_string = (type(cursor.mode) == 'table' and table.concat(cursor.mode, '-') or cursor.mode) .. ':'
 
     local has_form = false
 
     if cursor.hl or cursor.size or cursor.shape then
         has_form = true
-        cursor_string = cursor_string .. M.extract_form(cursor)
+        cursor_string = cursor_string .. self.stringify_form_part(cursor)
     end
 
     if cursor.blink ~= nil then
@@ -86,64 +78,65 @@ function M.extract(cursor, triggerable)
             cursor_string = cursor_string .. '-'
         end
 
-        cursor_string = cursor_string .. M.extract_blink(cursor.blink)
+        cursor_string = cursor_string .. self.stringify_blink_part(cursor.blink)
     elseif not has_form then
         error 'You did not specify nor blink nor a cursor form'
         return ''
     end
 
-    if has_form and cursor.replace then
-        table.insert(M._replaceable, cursor_string)
-    end
-
-    if triggerable then
-        table.insert(M._triggerable, cursor_string)
-    end
-
     return cursor_string
 end
 
---- @param cursors Cursor.Cursor[]
---- @param triggerable? boolean
---- @return string
-function M.extract_list(cursors, triggerable)
-    ---@type string
-    ---@diagnostic disable-next-line: assign-type-mismatch
-    local cursor_str = type(cursors[1]) == 'table' and M.extract(cursors[1], triggerable) or cursors[1]
+--- @param cursors (Cursor.Cursor | string)[]
+function M:set_trigger_cursors(cursors)
+    self.iterate(cursors, function(cursor)
+        table.insert(M._triggerable, cursor.str)
+    end)
+end
 
-    local len = vim.tbl_count(cursors)
-
-    if len == 1 then
-        return cursor_str
-    else
-        for i = 2, len, 1 do
-            if type(cursors[i]) == 'table' then
-                cursor_str = cursor_str .. ',' .. M.extract(cursors[i], triggerable)
-            else
-                cursor_str = cursor_str .. ',' .. cursors[i]
-            end
+--- @param cursors (Cursor.Cursor | string)[]
+function M:set_constant_cursors(cursors)
+    self.iterate(cursors, function(cursor)
+        if cursor.tbl and cursor.tbl.replace then
+            table.insert(M._replaceable, cursor.str)
         end
 
-        return cursor_str
+        self.set(cursor.str)
+    end)
+end
+
+--- @param cursors (Cursor.Cursor | string)[]
+function M.iterate(cursors, cb)
+    for _, cursor in ipairs(cursors) do
+        if type(cursor) == 'table' then
+            local csr = M:stringify(cursor)
+
+            cb { str = csr, tbl = cursor }
+        else
+            for _, csr in
+                -- split it, because string with multiple cursors can pe passed
+                ipairs(vim.split(cursor --[[ @as string ]], ','))
+            do
+                cb { str = csr }
+            end
+        end
     end
 end
 
 --- @package
 --- @private
 --- @param cursor Cursor.Cursor
-function M.extract_form(cursor)
+function M.stringify_form_part(cursor)
     vim.validate {
         size = {
             cursor.size,
-            { 's', 'n', 'nil' },
+            { 'n', 'nil' },
             function(s)
                 if cursor.shape == 'block' then
                     return true
                 end
 
-                local size = tonumber(s)
-
-                return size > 0 and size <= 100
+                return s > 0 and s <= 100
             end,
             'it to be between 1 and 100',
         },
@@ -176,10 +169,10 @@ function M.extract_form(cursor)
 
     local cursor_str = ''
 
-    -- to be honest, there's no sense in doing that, since neovim handles block shape
-    -- even if you specify its size (it just won't be applied), but a more correct way
-    -- is just not specifying a size when you set the "block" cursor anyway
     if cursor.shape then
+        -- to be honest, there's no sense in doing that, since neovim handles block shape
+        -- even if you specify its size (the size just won't be applied), but a more correct way
+        -- is just not specifying a size when you set the "block" cursor anyway
         if cursor.shape == 'block' then
             cursor_str = cursor.shape
         else
@@ -188,20 +181,19 @@ function M.extract_form(cursor)
     end
 
     if cursor.hl then
-        if type(cursor.hl) == 'table' then
-            return cursor_str .. '-' .. table.concat(cursor.hl --[[ @as table<string> ]], '/')
-        else
-            return cursor_str .. '-' .. cursor.hl
-        end
-    else
-        return cursor_str
+        ---@diagnostic disable-next-line: param-type-mismatch
+        return cursor_str .. '-' .. (type(cursor.hl) == 'table' and table.concat(cursor.hl, '/') or cursor.hl)
     end
+
+    return cursor_str
 end
 
 --- @package
 --- @private
 --- @param blink Cursor.Cursor.Blink | number | false
-function M.extract_blink(blink)
+function M.stringify_blink_part(blink)
+    -- NOTE: it will only apply if blink is false. blink == nil should not come here
+    -- because there's a check for nil above in the code.
     if not blink then
         return 'blinkwait0-blinkon0-blinkoff0'
     end
