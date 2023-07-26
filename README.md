@@ -53,7 +53,7 @@ It is an array of cursor strings (`:h 'guicursor'`) or lua tables with the follo
 
 `Cursor.Cursor`
 
-- **`* mode`** - mode in which a cursor will be applied, check `:h 'guicursor'`.
+- **`mode`** - **required**. mode in which a cursor will be applied, check `:h 'guicursor'`.
 - **`shape`** - `'block'` | `'ver'` | `'hor'` - shape of a cursor: block, vertical or horizontal.
 - **`size`** - `number` from 1 to 100. Will only work in GUI. Ignored for the `block` shape.
 - **`hl`** - `string` | `[string, string]` - Highlight group or groups which will be used to highlight a cursor. If a tuple specified, then the second
@@ -75,8 +75,105 @@ If specified as `false`, then it will forcely disable blinking (the use-case of 
   > disable blinking completely (`:h 'guicursor'`)
 
 ## Custom trigger
+You can build your custom trigger system and then call trigger/revoke methods to apply/delete the cursors you specified:
+
+1. You need to setup the plugin to use the "custom" strategy and specify regular and trigger cursors.
+
+```lua
+require('cursor').setup {
+  cursors = {
+    -- put your regular cursors here
+  },
+  trigger = {
+    strategy = {
+      -- use custom strategy
+      type = 'custom',
+    },
+    cursors = {
+      -- put cursors that will be set while trigger is active here
+    }
+  }
+```
+
+2. Require the `cursor` table with 2 mentioned methods:
+
+```lua
+local cursor = require('cursor.strategy.custom')
+```
+
+3. Use those methods with your custom triggers:
+  - You can use events to trigger your cursors:
+  ```lua
+    vim.api.nvim_create_autocmd('InsertEnter', {
+      callback = cursor.trigger
+    })
+
+    vim.api.nvim_create_autocmd('InsertLeave', {
+      callback = cursor.revoke
+    })
+  ```
+
+> **Advice**: don't forget about the `replace` property when specifying regular cursors. It will allow you
+> to remove those cursors while your triggers are active.
 
 ## Examples
+
+- Set cursors in all mode to have the `block` shape.
+
+```lua
+require('cursor').setup {
+  overwrite_cursor = true,
+  cursors = {
+    {
+      mode = 'a',
+      shape = 'block'
+    }
+  }
+}
+```
+
+- The example below will unset blinking on `CursorMoved` and `CursorMovedI` events and set it on `CursorHold` and `CursorHoldI` events.
+
+```lua
+require('cursor').setup {
+  cursors = {
+    {
+      mode = 'a',
+      blink = { wait = 100, freq = 400 },
+    },
+  },
+  trigger = {
+    strategy = {
+      type = 'event',
+    },
+    cursors = {
+      {
+        mode = 'a',
+        blink = false,
+      },
+    },
+  },
+}
+```
+
+- The example below will highlight your cursor on the same events as the example above and remove highlights as well.
+
+```lua
+require('cursor').setup {
+  trigger = {
+    strategy = {
+      type = 'event'
+    },
+    cursors = {
+      {
+        mode = 'a',
+        hl = 'YourHighlight'
+      }
+    }
+  }
+}
+```
+      
 
 ## Terminals & GUI
 
@@ -88,4 +185,4 @@ If specified as `false`, then it will forcely disable blinking (the use-case of 
 
 ### GUIs
 
-- Neovide - eveyrything works perfectly. Tested on MacOS.
+- Neovide - everything works perfectly. Tested on MacOS.
