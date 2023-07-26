@@ -18,20 +18,13 @@ jobs:
           neovim: true
           version: nightly
 
-      - name: luajit
-        uses: leafo/gh-actions-lua@v10
-        with:
-          luaVersion: "luajit-2.1.0-beta3"
-
-      - name: luarocks
-        uses: leafo/gh-actions-luarocks@v4
-
-      - name: run test
-        shell: bash
+      - name: Install plenary
         run: |
-          luarocks install luacheck
-          luarocks install vusted
-          vusted ./tests
+          git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
+          ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
+
+      - name: Run tests
+        run: nvim --headless --noplugin -c 'packadd plenary.nvim' -c "PlenaryBustedDirectory tests/ { sequential = true }"
 
   docs:
     runs-on: ubuntu-latest
