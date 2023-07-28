@@ -10,7 +10,7 @@
 --- @field wait? number
 --- @field on? number
 --- @field off? number
---- @field freq? number - unspecified blink properties will be set to this value
+--- @field default? number - unspecified blink properties will be set to this value
 
 local M = {
     _replaceable = {},
@@ -204,9 +204,9 @@ function M.stringify_blink_part(blink)
 
     return string.format(
         'blinkwait%s-blinkon%s-blinkoff%s',
-        blink.wait or blink.freq,
-        blink.on or blink.freq,
-        blink.off or blink.freq
+        blink.wait or blink.default,
+        blink.on or blink.default,
+        blink.off or blink.default
     )
 end
 
