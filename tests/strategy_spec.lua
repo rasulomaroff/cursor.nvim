@@ -23,7 +23,7 @@ describe('strategy module:', function()
     after_each(function()
         -- clear all test autocmds and cursor.nvim autocmds as well
         vim.api.nvim_del_augroup_by_id(augroup)
-        vim.cmd [[ autocmd! CommuNVIM-cursor ]]
+        vim.cmd [[ autocmd! CommuNvim-cursor ]]
         augroup = nil
 
         vim.cmd [[ bd! ]]
