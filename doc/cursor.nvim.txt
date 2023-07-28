@@ -89,7 +89,7 @@ following type:
     - **wait** - `number` ms - blinkwait
     - **on** - `number` ms - blinkon
     - **off** - `number` ms - blinkoff
-    - **freq** - `number` ms - this value will be used if any of the above fields aren’t specified
+    - **default** - `number` ms - this value will be used if any of the above fields aren’t specified
     You can read about all of the above options in `:h 'guicursor'`
       Warn: all of those blink options are supposed to work in GUI. You can still set
       numbers there to enable blinking in general, but in most cases it won’t
@@ -183,7 +183,7 @@ EXAMPLES                                    *cursor.nvim-cursor.nvim-examples*
       cursors = {
         {
           mode = 'a',
-          blink = { wait = 100, freq = 400 },
+          blink = { wait = 100, default = 400 },
         },
       },
       trigger = {
