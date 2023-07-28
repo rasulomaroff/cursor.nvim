@@ -131,19 +131,34 @@ to apply/delete the cursors you specified:
 - You can use events to trigger your cursors:
 
 >lua
-      vim.api.nvim_create_autocmd('InsertEnter', {
-        callback = cursor.trigger
-      })
+    vim.api.nvim_create_autocmd('InsertEnter', {
+      callback = cursor.trigger
+    })
     
-      vim.api.nvim_create_autocmd('InsertLeave', {
-        callback = cursor.revoke
-      })
+    vim.api.nvim_create_autocmd('InsertLeave', {
+      callback = cursor.revoke
+    })
+<
+
+- Or you can call methods from anywhere you want
+
+>lua
+    local function custom()
+      -- other code
+      cursor.trigger()
+      -- other code
+    end
 <
 
 
   **Advice**don’t forget about the `replace` property when specifying regular
   cursors. It will allow you to remove those cursors while your triggers are
   active.
+
+  If you call the `trigger` method twice without calling the `revoke` method
+  between them, nothing bad will happen, cursors won’t be applied twice. These
+  cases are handled correctly, the same goes to calling the `revoke` method
+  twice.
 
 EXAMPLES                                    *cursor.nvim-cursor.nvim-examples*
 
