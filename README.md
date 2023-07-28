@@ -66,7 +66,7 @@ If specified as `false`, then it will forcely disable blinking (the use-case of 
     - **`wait`** - `number` ms - blinkwait
     - **`on`** - `number` ms - blinkon
     - **`off`** - `number` ms - blinkoff
-    - **`freq`** - `number` ms - this value will be used if any of the above fields aren't specified
+    - **`default`** - `number` ms - this value will be used if any of the above fields aren't specified
 
   You can read about all of the above options in `:h 'guicursor'`
   
@@ -150,7 +150,7 @@ require('cursor').setup {
   cursors = {
     {
       mode = 'a',
-      blink = { wait = 100, freq = 400 },
+      blink = { wait = 100, default = 400 },
     },
   },
   trigger = {
