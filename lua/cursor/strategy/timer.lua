@@ -29,7 +29,7 @@ function M:init(config)
         delay = { config.delay, 'n' },
     }
 
-    self._delay = config.delay
+    self._delay = config.delay or 5000
 
     --- @type string[]
     local events
