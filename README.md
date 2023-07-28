@@ -9,6 +9,7 @@
 - **Declarative**: configure cursors with ease of lua tables
 - **Triggers**: change cursor colors/shape/size/blink on specific triggers
 - **Trigger strategies**: select one of two available strategies or build your own
+- **Complete**: support for all native cursor settings
 
 ## Installation
 
@@ -66,13 +67,53 @@ If specified as `false`, then it will forcely disable blinking (the use-case of 
     - **`wait`** - `number` ms - blinkwait
     - **`on`** - `number` ms - blinkon
     - **`off`** - `number` ms - blinkoff
-    - **`default`** - `number` ms - this value will be used if any of the above fields aren't specified
+    - **`default`** - `number` ms - this value will be used if any of the fields above aren't specified
 
   You can read about all of the above options in `:h 'guicursor'`
   
   > Warn: all of those blink options are supposed to work in GUI. You can still set numbers there to enable blinking in general,
   > but in most cases it won't matter which number you specify. Don't forget if you set `0` for any of those fields, it will
   > disable blinking completely (`:h 'guicursor'`)
+
+### Trigger
+
+**`config.trigger.cursors`**: `table<Cursor.Cursor | string>`
+
+It is an array of cursor strings (`:h 'guicursor'`) or lua tables with the same type as `config.cursors`, except it doesn't
+have `replace` property. Every other field is applicable. These cursors will be applied on specific triggers and revoked after those
+triggers are gone.
+
+**`config.trigger.strategy.type`**: `'event'` | `'timer'` | `'custom'`
+
+Default: `nil`
+
+Specifies a strategy type.
+
+#### Strategies
+
+**Timer** strategy type - `'timer'`
+
+**`config.trigger.strategy.timer`**: `Cursor.Strategy.Timer`
+
+This field will be used only if `config.trigger.strategy.type='timer'`. It will use a timer to revoke cursors and events to trigger them.
+By default cursors are triggered on `CursorMoved` and `CursorMovedI` events, but you can replace/extend them.
+
+`Cursor.Strategy.Timer`
+
+- **`delay`**: `number` - delay in ms after which cursor will be revoked. Default: `5000`.
+- **`events`**: `table<string>` - array of events that will trigger cursors applying. They will extend default ones (`CursorMovedI`, `CursorMoved`).
+- **`overwrite_events`**: `boolean` - remove default events from the `events` field. Default: `false`.
+
+**Event** strategy type - `'event'`
+
+This type of strategy doesn't have a config. It will be triggered on `CursorMoved` and `CursorMovedI` events and set cursors. Cursors will be unset on
+`CursorHold` and `CursorHoldI` events.
+
+>The time between `CursorMoved` and `CursorHold` events are specified by `vim.opt.updatetime`.
+
+**Custom** strategy type - `'custom'`
+
+Custom strategy type allows you to control when cursors are applied and revoked. You can read more on this below.
 
 ## Custom trigger
 You can build your custom trigger system and then call trigger/revoke methods to apply/delete the cursors you specified:
@@ -178,6 +219,34 @@ require('cursor').setup {
     cursors = {
       {
         mode = 'a',
+        hl = 'YourHighlight'
+      }
+    }
+  }
+}
+```
+
+- Revoke trigger cursors after 10 seconds after triggering
+
+```lua
+require('cursor').setup {
+  cursors = {
+    {
+      mode = 'a',
+      shape = 'block'
+    },
+  },
+  trigger = {
+    strategy = {
+      type = 'timer',
+      timer = {
+        delay = 10000
+      }
+    },
+    cursors = {
+      {
+        mode = 'a',
+        blink = 500,
         hl = 'YourHighlight'
       }
     }
