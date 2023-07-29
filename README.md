@@ -1,8 +1,7 @@
 # cursor.nvim
 
-![cursor nvim](https://github.com/CommuNvim/cursor.nvim/assets/80093436/a163e0f1-07fd-4816-a11a-33a09d0cef33)
-
 ![Lua](https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/CommuNvim/cursor.nvim/ci.yml?branch=main&style=for-the-badge)](https://github.com/CommuNvim/cursor.nvim/actions/workflows/ci.yml)
 
 ## Features
 
