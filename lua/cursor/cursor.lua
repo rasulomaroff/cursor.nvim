@@ -181,8 +181,12 @@ function M.stringify_form_part(cursor)
     end
 
     if cursor.hl then
+        if #cursor_str > 0 then
+            cursor_str = cursor_str .. '-'
+        end
+
         ---@diagnostic disable-next-line: param-type-mismatch
-        return cursor_str .. '-' .. (type(cursor.hl) == 'table' and table.concat(cursor.hl, '/') or cursor.hl)
+        return cursor_str .. (type(cursor.hl) == 'table' and table.concat(cursor.hl, '/') or cursor.hl)
     end
 
     return cursor_str
