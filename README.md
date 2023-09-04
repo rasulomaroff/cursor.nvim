@@ -260,7 +260,7 @@ require('cursor').setup {
 }
 ```
 
-## Terminals & GUI
+## Terminals & GUIs
 
 ### Terminals
 
