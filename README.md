@@ -63,7 +63,12 @@ It is an array of cursor strings (`:h 'guicursor'`) or lua tables with the follo
 - **`blink`** - `number` | `false` | `Cursor.Cursor.Blink` - If specified as `number`, then that number will be used for `blinkwait`, `blinkon`, `blinkoff`.
   If specified as `false`, then it will forcely disable blinking (the use-case of this will be presented below). Or can be specified as a table with the following type:
 
-  `Cursor.Cursor.Blink` - **`wait`** - `number` ms - blinkwait - **`on`** - `number` ms - blinkon - **`off`** - `number` ms - blinkoff - **`default`** - `number` ms - this value will be used if any of the fields above aren't specified
+  `Cursor.Cursor.Blink`
+
+  - **`wait`** - `number` ms - blinkwait
+  - **`on`** - `number` ms - blinkon
+  - **`off`** - `number` ms - blinkoff
+  - **`default`** - `number` ms - this value will be used if any of the fields above aren't specified
 
   You can read about all of the above options in `:h 'guicursor'`
 
