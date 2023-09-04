@@ -1,7 +1,7 @@
 # cursor.nvim
 
 ![Lua](https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/CommuNvim/cursor.nvim/ci.yml?branch=main&style=for-the-badge)](https://github.com/CommuNvim/cursor.nvim/actions/workflows/ci.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/rasulomaroff/cursor.nvim/ci.yml?branch=main&style=for-the-badge)](https://github.com/rasulomaroff/cursor.nvim/actions/workflows/ci.yml)
 
 ## Features
 
@@ -12,10 +12,11 @@
 
 ## Installation
 
-- With `lazy.nvim`: 
+- With `lazy.nvim`:
+
 ```lua
 {
-  'CommuNvim/cursor.nvim',
+  'rasulomaroff/cursor.nvim',
   event = 'VeryLazy',
   opts = {
     -- Your options go here
@@ -57,19 +58,15 @@ It is an array of cursor strings (`:h 'guicursor'`) or lua tables with the follo
 - **`shape`** - `'block'` | `'ver'` | `'hor'` - shape of a cursor: block, vertical or horizontal.
 - **`size`** - `number` from 1 to 100. Will only work in GUI. Ignored for the `block` shape.
 - **`hl`** - `string` | `[string, string]` - Highlight group or groups which will be used to highlight a cursor. If a tuple specified, then the second
-value is used to highlight language mappings. Read more `:h language-mapping`.
+  value is used to highlight language mappings. Read more `:h language-mapping`.
 - **`replace`** - `boolean` - remove this cursor while a trigger is active. `default`: false.
 - **`blink`** - `number` | `false` | `Cursor.Cursor.Blink` - If specified as `number`, then that number will be used for `blinkwait`, `blinkon`, `blinkoff`.
-If specified as `false`, then it will forcely disable blinking (the use-case of this will be presented below). Or can be specified as a table with the following type:
+  If specified as `false`, then it will forcely disable blinking (the use-case of this will be presented below). Or can be specified as a table with the following type:
 
-  `Cursor.Cursor.Blink`
-    - **`wait`** - `number` ms - blinkwait
-    - **`on`** - `number` ms - blinkon
-    - **`off`** - `number` ms - blinkoff
-    - **`default`** - `number` ms - this value will be used if any of the fields above aren't specified
+  `Cursor.Cursor.Blink` - **`wait`** - `number` ms - blinkwait - **`on`** - `number` ms - blinkon - **`off`** - `number` ms - blinkoff - **`default`** - `number` ms - this value will be used if any of the fields above aren't specified
 
   You can read about all of the above options in `:h 'guicursor'`
-  
+
   > Warn: all of those blink options are supposed to work in GUI. You can still set numbers there to enable blinking in general,
   > but in most cases it won't matter which number you specify. Don't forget if you set `0` for any of those fields, it will
   > disable blinking completely (`:h 'guicursor'`)
@@ -108,13 +105,14 @@ By default cursors are triggered on `CursorMoved` and `CursorMovedI` events, but
 This type of strategy doesn't have a config. It will be triggered on `CursorMoved` and `CursorMovedI` events and set cursors. Cursors will be unset on
 `CursorHold` and `CursorHoldI` events.
 
->The time between `CursorMoved` and `CursorHold` events are specified by `vim.opt.updatetime`.
+> The time between `CursorMoved` and `CursorHold` events are specified by `vim.opt.updatetime`.
 
 **Custom** strategy type - `'custom'`
 
 Custom strategy type allows you to control when cursors are applied and revoked. You can read more on this below.
 
 ## Custom trigger
+
 You can build your custom trigger system and then call trigger/revoke methods to apply/delete the cursors you specified:
 
 1. You need to setup the plugin to use the "custom" strategy and specify regular and trigger cursors.
@@ -142,24 +140,28 @@ local cursor = require('cursor.strategy.custom')
 ```
 
 3. Use those methods with your custom triggers:
-  - You can use events to trigger your cursors:
-  ```lua
-  vim.api.nvim_create_autocmd('InsertEnter', {
-    callback = cursor.trigger
-  })
 
-  vim.api.nvim_create_autocmd('InsertLeave', {
-    callback = cursor.revoke
-  })
-  ```
-  - Or you can call methods from anywhere you want
-  ```lua
-  local function custom()
-    -- other code
-    cursor.trigger()
-    -- other code
-  end
-  ```
+- You can use events to trigger your cursors:
+
+```lua
+vim.api.nvim_create_autocmd('InsertEnter', {
+  callback = cursor.trigger
+})
+
+vim.api.nvim_create_autocmd('InsertLeave', {
+  callback = cursor.revoke
+})
+```
+
+- Or you can call methods from anywhere you want
+
+```lua
+local function custom()
+  -- other code
+  cursor.trigger()
+  -- other code
+end
+```
 
 > **Advice**: don't forget about the `replace` property when specifying regular cursors. It will allow you
 > to remove those cursors while your triggers are active.
@@ -252,7 +254,6 @@ require('cursor').setup {
   }
 }
 ```
-      
 
 ## Terminals & GUI
 

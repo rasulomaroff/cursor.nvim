@@ -1,6 +1,6 @@
 local M = {}
 
-M.group = vim.api.nvim_create_augroup('CommuNvim-cursor', { clear = true })
+M.group = vim.api.nvim_create_augroup('cursor.nvim', { clear = true })
 
 function M.autocmd(event, opts)
     return vim.api.nvim_create_autocmd(event, opts)
