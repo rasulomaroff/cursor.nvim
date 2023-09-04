@@ -9,7 +9,7 @@ Table of Contents                              *cursor.nvim-table-of-contents*
   - Configuration                      |cursor.nvim-cursor.nvim-configuration|
   - Custom trigger                    |cursor.nvim-cursor.nvim-custom-trigger|
   - Examples                                |cursor.nvim-cursor.nvim-examples|
-  - Terminals & GUI                  |cursor.nvim-cursor.nvim-terminals-&-gui|
+  - Terminals & GUIs                |cursor.nvim-cursor.nvim-terminals-&-guis|
 
 ==============================================================================
 1. cursor.nvim                                       *cursor.nvim-cursor.nvim*
@@ -88,9 +88,11 @@ following type:
     If specified as `false`, then it will forcely disable blinking (the use-case of
     this will be presented below). Or can be specified as a table with the
     following type:
-    `Cursor.Cursor.Blink` - **wait** - `number` ms - blinkwait - **on** - `number`
-    ms - blinkon - **off** - `number` ms - blinkoff - **default** - `number` ms -
-    this value will be used if any of the fields above aren’t specified
+    `Cursor.Cursor.Blink`
+    - **wait** - `number` ms - blinkwait
+    - **on** - `number` ms - blinkon
+    - **off** - `number` ms - blinkoff
+    - **default** - `number` ms - this value will be used if any of the fields above aren’t specified
     You can read about all of the above options in |'guicursor'|
       Warn: all of those blink options are supposed to work in GUI. You can still set
       numbers there to enable blinking in general, but in most cases it won’t
@@ -296,7 +298,7 @@ EXAMPLES                                    *cursor.nvim-cursor.nvim-examples*
 <
 
 
-TERMINALS & GUI                      *cursor.nvim-cursor.nvim-terminals-&-gui*
+TERMINALS & GUIS                    *cursor.nvim-cursor.nvim-terminals-&-guis*
 
 
 TERMINALS ~
